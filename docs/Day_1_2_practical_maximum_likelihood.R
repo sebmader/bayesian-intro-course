@@ -1,7 +1,7 @@
 rm(list=ls())
 library(manipulate)
  
-set.seed(123) # initiate random number generator for reproducibility
+set.seed(532) # initiate random number generator for reproducibility
 
 #------------------------------------------------------------------------------
 # 1 generate data
@@ -12,8 +12,12 @@ y = rnorm(n=n, mean=1.0, sd=2.0)
 
 # examine data:
 y
-hist(y)
-points(y, jitter(rep(0, times=n), factor=10))
+hist(y) + 
+  points(y, jitter(rep(0, times=n), factor=10))
+
+density = density(y)
+plot(density) + 
+  points(y, jitter(rep(0, times=n), factor=0.2))
 
 #------------------------------------------------------------------------------
 # 2 statistical model, deterministic and stochastic part
@@ -26,7 +30,7 @@ points(y, jitter(rep(0, times=n), factor=10))
 # 3 the likelihood function 
 #------------------------------------------------------------------------------
 
-# likelihood function for a single datapoint probability density function 
+# likelihood function for a single data point probability density function
 # p(y_i|mu,sigma)= ... exp(...)
 # single data point, likelihood function L can be computed with
 # dnorm() function (for a given parameter combination mu, sigma)
