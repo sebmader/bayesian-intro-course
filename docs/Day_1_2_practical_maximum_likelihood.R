@@ -1,7 +1,7 @@
 rm(list=ls())
 library(manipulate)
  
-set.seed(123) # initiate random number generator for reproducibility
+set.seed(532) # initiate random number generator for reproducibility
 
 #------------------------------------------------------------------------------
 # 1 generate data
@@ -12,8 +12,8 @@ y = rnorm(n=n, mean=1.0, sd=2.0)
 
 # examine data:
 y
-hist(y)
-points(y, jitter(rep(0, times=n), factor=10))
+hist(y) + 
+  points(y, jitter(rep(0, times=n), factor=10))
 
 #------------------------------------------------------------------------------
 # 2 statistical model, deterministic and stochastic part
