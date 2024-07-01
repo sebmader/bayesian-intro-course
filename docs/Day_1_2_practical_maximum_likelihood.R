@@ -36,8 +36,9 @@ plot(density) +
 # dnorm() function (for a given parameter combination mu, sigma)
 
 # likelihood of first data point:
-i = 1
+i = 2
 L = dnorm(x=y[i], mean=0, sd=1)
+## TODO: different mean and sd from sampled distribution!?
 y[i]
 L
 
