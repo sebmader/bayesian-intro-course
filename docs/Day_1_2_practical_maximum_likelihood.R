@@ -15,6 +15,11 @@ y
 hist(y) + 
   points(y, jitter(rep(0, times=n), factor=10))
 
+# different density plot (is this already statistics though?)
+density = density(y)
+plot(density) + 
+  points(y, jitter(rep(0, times=n), factor=0.2))
+
 #------------------------------------------------------------------------------
 # 2 statistical model, deterministic and stochastic part
 #------------------------------------------------------------------------------
@@ -26,14 +31,15 @@ hist(y) +
 # 3 the likelihood function 
 #------------------------------------------------------------------------------
 
-# likelihood function for a single datapoint probability density function 
+# likelihood function for a single data point probability density function
 # p(y_i|mu,sigma)= ... exp(...)
 # single data point, likelihood function L can be computed with
 # dnorm() function (for a given parameter combination mu, sigma)
 
 # likelihood of first data point:
-i = 1
+i = 2
 L = dnorm(x=y[i], mean=0, sd=1)
+## TODO: different mean and sd from sampled distribution!?
 y[i]
 L
 
@@ -77,7 +83,7 @@ prod(L)
 curve.data <- function(mean, sd, y)
 {
   # plot curve
-  curve(dnorm(x, mean=mean, sd=sd), from=-4, to=6, 
+  curve(dnorm(x, mean=mean, sd=sd), from=-6, to=8, 
         xlab="y", ylab="p(y)", ylim=c(0, 0.6))
   # plot lines for all datapoints
   for(i in 1:n){
@@ -89,11 +95,12 @@ curve.data <- function(mean, sd, y)
   text(-2,0.5, paste("NLL=",round(NLL,3)) )
 }
 
+# curve.data(1.1,2.2,y) # manually maximised (well, minimised) likelihood
 curve.data(0,1,y)
 
 manipulate(curve.data(mean, sd, y), 
            mean=slider(-3, 3, step=0.1, initial=0), 
-           sd=slider(0.1,4, step=0.1, initial=1) )
+           sd=slider(0.1,4, step=0.1, initial=1))
 
 
 #------------------------------------------------------------------------------
