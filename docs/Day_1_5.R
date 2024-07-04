@@ -1,29 +1,27 @@
-rm(list=ls())
+rm(list = ls())
 
-set.seed(123)
+set.seed(1543)
 
 library(rstan)
 library(coda)
 
-rstan_options(auto_write=TRUE)
-options(mc.cores=4)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 
-n=100
+n = 145
 
-a=1
-b=2
-sigma=0.5
+a = 2.3
+b = 1.5
+sigma = 0.5
 
-x = runif(n=n, min=0, max=1)
-y = a+b*x + rnorm(n=100, mean=0, sd=sigma)
+x = runif(n = n, min = 0, max = 3)
+y = a + b * x + rnorm(n = n, mean = 0, sd = sigma)
 
-df = data.frame(x=x, y=y)
+df = data.frame(x = x, y = y)
 
 plot(df)
 
-data = list(n=n,
-            x=df$x,
-            y=df$y)
+data = list(n = n, x = df$x, y = df$y)
 
 stan_code = '
 data {
