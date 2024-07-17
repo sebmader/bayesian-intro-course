@@ -92,5 +92,5 @@ correlationPlot( as.matrix(fit)[, 1:3]   )
 # stan_hist(fit)
 # 
 # stan_dens(fit)
-# 
+
 # stan_scat(fit, pars = c("a", "b"))
