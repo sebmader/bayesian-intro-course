@@ -7,7 +7,7 @@ library(coda)
 
 rstan_options(auto_write = TRUE)
 parallel::detectCores(all.test = FALSE, logical = TRUE)
-options(mc.cores = 4)
+options(mc.cores = 3)
 
 
 ## quadratic model ##
@@ -49,7 +49,8 @@ model {
   for(i in 0:(n - 1)) {
     y[i] ~ normal(b[1] + b[2] * x[i] + b[3] * x[i]^2, sigma);
   }
-}'
+}
+'
 
 stan_model_quad = stan_model(model_code = stan_code)
 
@@ -57,7 +58,7 @@ fit = sampling(stan_model_quad,
                data = data_list,
                iter = 2000,
                warmup = 1000,
-               chains = 4)
+               chains = 3)
 
 
 
