@@ -85,7 +85,6 @@ pairs(fit, pars = c("b", "sigma"))
 library(BayesianTools)
 correlationPlot(as.matrix(fit)[,1:4], thin = 1)
 
-
 # OOPSIE.. apparently, it was not the idea to produce quadratic data but to fit
 # a quadratic bayesian model to the linear data...
 # to observe how it does NOT fit 
