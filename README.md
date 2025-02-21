@@ -8,7 +8,7 @@ benjamin.rosenbaum@idiv.de
 
 The course offers a straightforward and practical approach to applied statistics using Bayesian inference for ecologists. It starts with a general introduction to statistical modeling and the concepts of Bayesian statistics (likelihood, priors, posterior distribution, MCMC sampling). We will move step-by-step from classical ANOVA and linear regression to generalized, nonlinear, or mixed-effects models, with a strong conceptual focus on the building blocks of statistical models.
 
-While previous software required users to code in specific modeling languages (JAGS, Stan, NIMBLE), we are focusing on the user-friendly and flexible R-package ‘brms’, which makes the transition easy for people familiar with ‘lm’ or ‘lme4’. An additional introduction to coding in Stan will be provided for interested participants.
+While previous software required users to code in specific modeling languages (JAGS, NIMBLE, Stan), we are focusing on the user-friendly and flexible R-package ‘brms’, which makes the transition easy for people familiar with ‘lm’ or ‘lme4’. An additional introduction to coding in Stan will be provided for interested participants.
 
 Participants learn how to practically conceptualize their research questions into statistical models. They learn how to specify and critically interpret models of varying complexity in R. The course prepares participants to analyze their own data with state-of-the-art methodology.
 
@@ -23,7 +23,7 @@ Participants learn how to practically conceptualize their research questions int
 | (5) Generalized linear models | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Lecture_05.pdf) | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_05.pdf) &nbsp; [html](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_05.html) &nbsp; [Rcode](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_05.R)  |
 | (6) Mixed effects models      | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Lecture_06.pdf) | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_06.pdf) &nbsp; [html](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_06.html) &nbsp; [Rcode](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_06.R)  |
 | (7) Stan introduction         | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Lecture_07.pdf) | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_07.pdf) &nbsp; [html](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_07.html) &nbsp; [Rcode](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_07.R)  |
-| (8) Conclusions               | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Lecture_08.pdf) | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_08.pdf) &nbsp; [html](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_08.html) &nbsp; [Rcode](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_08.R)  |
+| (8) Conclusions               | [pdf](https://benjamin-rosenbaum.github.io/bayesian-intro/Lecture_08.pdf) | pdf &nbsp; html &nbsp; [Rcode](https://benjamin-rosenbaum.github.io/bayesian-intro/Practical_08.R)  |
 
 ### Software requirements
 
