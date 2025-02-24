@@ -4,7 +4,6 @@
 # We learn about the likelihood function and do some didactic examples of maximum
 # likelihood estimation (MLE) with the `optim()` function.
 
-rm(list = ls())
 library("sfsmisc") # mathematical integration through data points
 try(dev.off())
 
@@ -35,7 +34,7 @@ mean(data$survived / data$total)
 x <- 0:20
 y <- dbinom(x = x, size = 20, prob = 0.3)
 barplot(y ~ x, xlab = "Survived out of 20", ylab = "Probability")
-sum(y)
+sum(y) # -> area under the curve of probability mass/dens function = 1
 
 # same for a different value of survival rate
 
@@ -402,5 +401,31 @@ data <- data.frame(
   temperature = c(5.9, 6.9, 1.5, 9.6, 9.0, 6.9, 8.0, 10.2, 4.8, 7.6, 6.2, 11.2, 7.3, 11.4, 4.1, 5.1, 3.7, 9.5, 6.4, 8.3)
 )
 
+library(ggplot2)
+ggplot(data, mapping = aes(x = age, y = weight, group = temperature)) +
+  geom_line()
+
+
 model5 <- lm(weight ~ age + temperature, data = data)
 summary(model5)
+
+# likelihood approach
+likelihood <- function(parameters, weights, ages, temperatures) {
+  lik <- dnorm(weights,
+    mean = parameters[1] + parameters[2] * ages + parameters[3] * temperatures,
+    sd = rep(parameters[4], length(weights)),
+    log = TRUE
+  )
+  return(-sum(lik))
+}
+
+ml <- optim(
+  fn = likelihood,
+  par = c(100, 5, 0, 8),
+  weights = data$weight, # data
+  ages = data$age,
+  temperatures = data$temperature
+) # data
+ml
+# $par
+# [1] 10.5594067  8.5795082 -0.8206534  9.0902816
