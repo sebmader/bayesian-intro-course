@@ -22,8 +22,8 @@ setwd("~/Nextcloud/Teaching brms/Practical_02")
 # Stochastic part:    weight ~ Normal(mu,sigma)
 
 data <- data.frame(
-  weight = c(104, 120, 118, 115, 99, 110, 102),
-  age = c(10, 12, 11, 11, 9, 11, 10)
+     weight = c(104, 120, 118, 115, 99, 110, 102),
+     age = c(10, 12, 11, 11, 9, 11, 10)
 )
 plot(data$age, data$weight)
 
@@ -81,14 +81,14 @@ summary(fit1)
 
 plot(conditional_effects(fit1))
 plot(conditional_effects(fit1),
-     points = TRUE
+  points = TRUE
 )
 
 # Again, this generates a ggplot object which can be modified, with some options
 # in the plot function, or full ggplot options if you save the object
 
 plot(conditional_effects(fit1),
-     points = TRUE, point_args = list(col = "red", alpha = 0.5)
+  points = TRUE, point_args = list(col = "red", alpha = 0.5)
 )
 
 # Note that we here only plot the uncertainty of the deterministic model part mu,
@@ -140,7 +140,7 @@ plot(fit2)
 # The model does not have to be fitted, just model formula and data must be specified.
 
 default_prior(weight ~ age,
-     data = data
+  data = data
 )
 
 # Alternatively, you can display the priors of any fitted model.
@@ -171,6 +171,7 @@ summary(fit2, prior = TRUE)
 # This would set a prior for all slopes (if you have >1 predictors)
 
 my_priors <- prior(normal(5, 1), class = b)
+my_priors
 
 # For setting a prior for a specific predictor, you specify it in "coef".
 # Since this model only has 1 predictor, both formulations are the same.
@@ -178,10 +179,10 @@ my_priors <- prior(normal(5, 1), class = b)
 my_priors <- prior(normal(5, 1), class = b, coef = age)
 
 fit3 <- brm(weight ~ age,
-     prior = my_priors,
-     data = data,
-     chains = 4,
-     iter = 5000
+  prior = my_priors,
+  data = data,
+  chains = 4,
+  iter = 5000
 )
 
 # same as:
@@ -260,8 +261,8 @@ plot1[[1]] + geom_vline(xintercept = 0)
 # (2) survival rate ----------------------------------------------------------------
 
 data <- data.frame(
-     total = c(22, 22, 29, 21, 25, 30, 24, 23, 25, 28),
-     survived = c(19, 14, 23, 19, 20, 18, 15, 16, 18, 15)
+  total = c(22, 22, 29, 21, 25, 30, 24, 23, 25, 28),
+  survived = c(19, 14, 23, 19, 20, 18, 15, 16, 18, 15)
 )
 
 # Exercise: Analyze the model for
@@ -280,3 +281,5 @@ data <- data.frame(
 # Re-run the analysis for different priors.
 
 # Test the hypothesis that mean survival is > 2/3.
+
+# TODO
