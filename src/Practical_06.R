@@ -1,18 +1,14 @@
 # Practical 6: Mixed effects models
 # by Benjamin Rosenbaum
 
-# We perform some classical linear modeling with a random grouping factor. 
+# We perform some classical linear modeling with a random grouping factor.
 # Predictions etc can be computed with random effects, or fixed effects only.
 # Model checks, model comparisons, hypotheses, etc are the same as with linear models.
 
-rm(list=ls())
 library("brms")
 library("ggplot2")
 library("performance")
 library("ecostats")
-
-setwd("~/Nextcloud/Teaching brms/Practical_06")
-
 
 # random int. ANOVA ------------------------------------------------------------
 
@@ -26,14 +22,15 @@ setwd("~/Nextcloud/Teaching brms/Practical_06")
 
 data("estuaries")
 table(estuaries$Mod, estuaries$Estuary)
-ggplot(estuaries, aes(Estuary, Total, col=Mod)) + geom_jitter(width=0.1, size=2)
+ggplot(estuaries, aes(Estuary, Total, col = Mod)) +
+  geom_jitter(width = 0.1, size = 2)
 
 # Remove NAs. brms automatically removes NA observations (rows in dataframe).
-# But when they appear in different predictors, make sure that all models are 
+# But when they appear in different predictors, make sure that all models are
 # fitted on the same dataset. Otherwise, model comparison doesn't work.
 
-ID.complete = complete.cases(estuaries[, c("Total","Mod","Estuary","Temperature")])
-estuaries = estuaries[ID.complete, ]
+ID.complete <- complete.cases(estuaries[, c("Total", "Mod", "Estuary", "Temperature")])
+estuaries <- estuaries[ID.complete, ]
 
 # partial pooling model
 
@@ -45,13 +42,14 @@ estuaries = estuaries[ID.complete, ]
 
 # (here b is effect-coded, but the fitted model below is dummy-coded)
 
-default_prior(Total ~ Mod+(1|Estuary), data=estuaries)
+default_prior(Total ~ Mod + (1 | Estuary), data = estuaries)
 
-fit.est.1 = brm(Total ~ Mod+(1|Estuary),
-                prior = prior(normal(0,10), class=b),
-                data = estuaries)
+fit.est.1 <- brm(Total ~ Mod + (1 | Estuary),
+  prior = prior(normal(0, 10), class = b),
+  data = estuaries
+)
 # some divergent transitions, but just 3 out of 4000 draws is no big deal
-summary(fit.est.1, prior=TRUE)
+summary(fit.est.1, prior = TRUE)
 plot(fit.est.1)
 
 # extract fixed and random effects (random effects not listed in summary)
@@ -61,57 +59,61 @@ ranef(fit.est.1)
 
 # fixed effects predictions
 
-plot(conditional_effects(fit.est.1), 
-     points=T, 
-     point_args=c(alpha=0.3, width=0.1))
+plot(conditional_effects(fit.est.1),
+  points = T,
+  point_args = c(alpha = 0.3, width = 0.1)
+)
 
 # fixed & random effects predictions
-# We get also get predictions (on Estuary-level) of what would happen if we 
+# We get also get predictions (on Estuary-level) of what would happen if we
 # applied modification instead of keeping an estuary pristine.
 
-plot(conditional_effects(fit.est.1,
-                         re_formula = NULL,
-                         conditions = make_conditions(fit.est.1, var=c("Estuary"))),
-     points=T, 
-     point_args=c(alpha=0.3, width=0.1, size=2))
+plot(
+  conditional_effects(fit.est.1,
+    re_formula = NULL,
+    conditions = make_conditions(fit.est.1, var = c("Estuary"))
+  ),
+  points = T,
+  point_args = c(alpha = 0.3, width = 0.1, size = 2)
+)
 
 # when computing predictions, we can choose to include random effects (default),
 # or fixed effects only (re_formula=NA)
 # re_formula=NULL **enforces** random effects, re_formula=NA **omits** random effects.
 
 fitted(fit.est.1) |> head()
-fitted(fit.est.1, re_formula=NA) |> head()
+fitted(fit.est.1, re_formula = NA) |> head()
 
-# The same holds for, e.g., R2 values. With random effects (default) computes the 
-# conditional R2, while without random effects (re_formula=NA) computes the 
+# The same holds for, e.g., R2 values. With random effects (default) computes the
+# conditional R2, while without random effects (re_formula=NA) computes the
 # marginal R2.
 
 bayes_R2(fit.est.1)
-bayes_R2(fit.est.1, re_formula=NULL) # (the same)
-bayes_R2(fit.est.1, re_formula=NA)
+bayes_R2(fit.est.1, re_formula = NULL) # (the same)
+bayes_R2(fit.est.1, re_formula = NA)
 
 # Model checks use random effects per default, but can also be done with fixed effects
 # only if required.
 
-pp_check(fit.est.1, ndraws=100)
-pp_check(fit.est.1, type="scatter_avg")
+pp_check(fit.est.1, ndraws = 100)
+pp_check(fit.est.1, type = "scatter_avg")
 
-pp_check(fit.est.1, ndraws=100, re_formula=NA)
-pp_check(fit.est.1, type="scatter_avg", re_formula=NA)
+pp_check(fit.est.1, ndraws = 100, re_formula = NA)
+pp_check(fit.est.1, type = "scatter_avg", re_formula = NA)
 
 # since this is a linear model, we can assess model assumptions with check_model
 # there is an additional check for the random effects (reqq)
 
-check_model(fit.est.1, check=c("linearity","homogeneity","qq","normality"))
-check_model(fit.est.1, check=c("reqq"))
+check_model(fit.est.1, check = c("linearity", "homogeneity", "qq", "normality"))
+check_model(fit.est.1, check = c("reqq"))
 
 # test for difference Mod-Pristine
 
-hypothesis(fit.est.1, "ModPristine<0", alpha=0.05)
+hypothesis(fit.est.1, "ModPristine<0", alpha = 0.05)
 
 # random int. ANCOVA ------------------------------------------------------------
 
-# deterministic part: mu[i] = b[Mod[i]] + c*Temperature[i] + delta[Estuary[i]]  
+# deterministic part: mu[i] = b[Mod[i]] + c*Temperature[i] + delta[Estuary[i]]
 #                     Mod = 1:2, Estuary=1:7
 # stochastic part:    Total[i] ~ normal(mu[i], sigma)         i=1:N
 # hierarchical:       delta[j] ~ normal(0, sd_Estuary)        j=1:7
@@ -119,34 +121,44 @@ hypothesis(fit.est.1, "ModPristine<0", alpha=0.05)
 
 # (here b is effect-coded, but the fitted model below is dummy-coded)
 
-default_prior(Total ~ Mod+scale(Temperature)+(1|Estuary),
-              data = estuaries)
+default_prior(Total ~ Mod + scale(Temperature) + (1 | Estuary),
+  data = estuaries
+)
 
 # weak prior for categorical and continuous variables
 
-fit.est.2 = brm(Total ~ Mod+scale(Temperature)+(1|Estuary),
-                prior = prior(normal(0,10), class=b),
-                data = estuaries)
+fit.est.2 <- brm(Total ~ Mod + scale(Temperature) + (1 | Estuary),
+  prior = prior(normal(0, 10), class = b),
+  data = estuaries
+)
 
-summary(fit.est.2, prior=TRUE)
+summary(fit.est.2, prior = TRUE)
 plot(fit.est.2)
 
 # fixed effects predictions
 
-plot(conditional_effects(fit.est.2, effect="Temperature:Mod"), 
-     points=T)
+plot(conditional_effects(fit.est.2, effect = "Temperature:Mod"),
+  points = T
+)
 
 # fixed & random effects predictions
 
-plot(conditional_effects(fit.est.2, effect="Temperature:Mod",
-                         re_formula = NULL,
-                         conditions = make_conditions(fit.est.2, var=c("Estuary")),
-                         prob=0),
-     points=T, 
-     point_args=c(alpha=1, width=0.1, size=2))
+plot(
+  conditional_effects(fit.est.2,
+    effect = "Temperature:Mod",
+    re_formula = NULL,
+    conditions = make_conditions(fit.est.2, var = c("Estuary")),
+    prob = 0
+  ),
+  points = T,
+  point_args = c(alpha = 1, width = 0.1, size = 2)
+)
 
-pp_check(fit.est.2, ndraws=100)
-pp_check(fit.est.2, type="scatter_avg")
+pp_check(fit.est.2, ndraws = 100)
+pp_check(fit.est.2, type = "scatter_avg")
+
+check_model(fit.est.2, check = c("linearity", "homogeneity", "qq", "normality"))
+check_model(fit.est.2, check = c("reqq"))
 
 # There is very weak support for the temperature model.
 # Both models come to the similar conclusions regarding Mod-Pristine
@@ -166,6 +178,114 @@ data("estuaryZone")
 table(estuaryZone$Estuary, estuaryZone$Mod, estuaryZone$Zone)
 
 # Remove NAs
-ID.complete = complete.cases(estuaryZone[, c("Total","Mod","Estuary","Temperature","Zone")])
-estuaryZone = estuaryZone[ID.complete, ]
+ID.complete <- complete.cases(estuaryZone[, c("Total", "Mod", "Estuary", "Temperature", "Zone")])
+estuaryZone <- estuaryZone[ID.complete, ]
 
+# check dem priors
+default_prior(Total ~ Mod + (1 | Estuary / Zone),
+  data = estuaryZone
+)
+
+default_prior(Total ~ Mod + scale(Temperature) + (1 | Estuary / Zone),
+  data = estuaries
+)
+
+# fit models as random effects
+fit_est_3 <- brm(
+  Total ~ Mod + (1 | Estuary / Zone),
+  prior = prior(normal(0, 10), class = b),
+  data = estuaryZone
+)
+
+summary(fit_est_3)
+plot(fit_est_3)
+
+plot(
+  conditional_effects(
+    fit_est_3,
+    effect = "Mod"
+  ),
+  points = TRUE,
+  point_args = c(alpha = 1, width = 0.1, size = 2)
+)
+
+plot(
+  conditional_effects(
+    fit_est_3,
+    effect = "Mod",
+    re_formula = NULL,
+    conditions = make_conditions(fit_est_3, var = c("Estuary", "Zone")),
+    prob = 0
+  ),
+  points = TRUE,
+  point_args = c(alpha = 1, width = 0.1, size = 2)
+)
+
+
+fit_est_4 <- brm(
+  Total ~ Mod + scale(Temperature) + (1 | Estuary / Zone),
+  prior = prior(normal(0, 10), class = b),
+  data = estuaryZone
+)
+
+summary(fit_est_4)
+# -> effect of temperature nullified by random Zone effect !!
+plot(fit_est_4)
+
+plot(conditional_effects(fit_est_4, effect = "Temperature:Mod"),
+  points = T
+)
+
+plot(
+  conditional_effects(fit_est_4,
+    effect = "Temperature:Mod",
+    re_formula = NULL,
+    conditions = make_conditions(fit_est_4, var = c("Zone")),
+    prob = 0.95
+  ),
+  points = TRUE,
+  point_args = c(alpha = 1, width = 0.1, size = 2)
+)
+
+LOO(fit_est_3, fit_est_4, moment_math = TRUE)
+
+# fit models as fixed effects
+fit_est_3_fix <- brm(
+  Total ~ Mod + Zone + (1 | Estuary),
+  prior = prior(normal(0, 10), class = b),
+  data = estuaryZone
+)
+
+summary(fit_est_3_fix)
+plot(fit_est_3_fix)
+
+plot(
+  conditional_effects(
+    fit_est_3_fix,
+    effect = "Mod:Zone",
+    re_formula = NULL,
+    prob = 0.95
+  ),
+  points = TRUE,
+  point_args = c(alpha = 1, width = 0.1, size = 2)
+)
+
+fit_est_4_fix <- brm(
+  Total ~ Mod + Zone + scale(Temperature) + (1 | Estuary),
+  prior = prior(normal(0, 10), class = b),
+  data = estuaryZone
+)
+
+summary(fit_est_4_fix)
+plot(fit_est_4_fix)
+
+plot(
+  conditional_effects(
+    fit_est_4_fix,
+    effect = "Temperature:Zone",
+    re_formula = NULL,
+    prob = 0.95
+  ),
+  points = TRUE,
+  point_args = c(alpha = 1, width = 0.1, size = 2)
+)
