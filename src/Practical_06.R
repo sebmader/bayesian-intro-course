@@ -182,19 +182,20 @@ ID.complete <- complete.cases(estuaryZone[, c("Total", "Mod", "Estuary", "Temper
 estuaryZone <- estuaryZone[ID.complete, ]
 
 # check dem priors
-default_prior(Total ~ Mod + (1 | Estuary / Zone),
+default_prior(Total ~ Mod + (1 | Estuary + Zone),
   data = estuaryZone
 )
 
-default_prior(Total ~ Mod + scale(Temperature) + (1 | Estuary / Zone),
+default_prior(Total ~ Mod + scale(Temperature) + (1 | Estuary + Zone),
   data = estuaries
 )
 
 # fit models as random effects
 fit_est_3 <- brm(
-  Total ~ Mod + (1 | Estuary / Zone),
+  Total ~ Mod + (1 | Estuary + Zone),
   prior = prior(normal(0, 10), class = b),
-  data = estuaryZone
+  data = estuaryZone,
+  control = list(adapt_delta = 0.9)
 )
 
 summary(fit_est_3)
@@ -223,7 +224,7 @@ plot(
 
 
 fit_est_4 <- brm(
-  Total ~ Mod + scale(Temperature) + (1 | Estuary / Zone),
+  Total ~ Mod + scale(Temperature) + (1 | Estuary + Zone),
   prior = prior(normal(0, 10), class = b),
   data = estuaryZone
 )
@@ -248,6 +249,7 @@ plot(
 )
 
 LOO(fit_est_3, fit_est_4, moment_math = TRUE)
+
 
 # fit models as fixed effects
 fit_est_3_fix <- brm(
